@@ -1,0 +1,48 @@
+{
+    "_comment": "All user-tunable risk & capital knobs. Loaded as the LAST freqtrade config (overrides config.json and strategy defaults). Edited by the Telegram settings bot; run /reload_config after manual edits.",
+    "max_open_trades": 3,
+    "stake_amount": "unlimited",
+    "available_capital": 300,
+    "stoploss": -0.08,
+    "trailing_stop": true,
+    "trailing_stop_positive": 0.02,
+    "trailing_stop_positive_offset": 0.04,
+    "trailing_only_offset_is_reached": true,
+    "minimal_roi": {
+        "0": 0.04,
+        "240": 0.025,
+        "720": 0.015,
+        "1440": 0.01
+    },
+    "companion": {
+        "capital_management": {
+            "enabled": true,
+            "initial_capital_usd": 300,
+            "profit_target_usd": 10000,
+            "set_aside_usd": 9000,
+            "restart_capital_usd": 1000,
+            "on_target": "pause_then_reset",
+            "force_exit_open_trades": false
+        },
+        "protections": [
+            {
+                "method": "CooldownPeriod",
+                "stop_duration_candles": 2
+            },
+            {
+                "method": "StoplossGuard",
+                "lookback_period_candles": 24,
+                "trade_limit": 4,
+                "stop_duration_candles": 12,
+                "only_per_pair": false
+            },
+            {
+                "method": "MaxDrawdown",
+                "lookback_period_candles": 48,
+                "trade_limit": 6,
+                "max_allowed_drawdown": 0.1,
+                "stop_duration_candles": 24
+            }
+        ]
+    }
+}

@@ -1,0 +1,190 @@
+{
+    "bot_name": "kraken-autotrader",
+    "trading_mode": "spot",
+    "margin_mode": "",
+    "dry_run": true,
+    "dry_run_wallet": 300,
+    "db_url": "sqlite:////freqtrade/user_data/tradesv3.dryrun.sqlite",
+    "stake_currency": "USD",
+    "fiat_display_currency": "USD",
+    "cancel_open_orders_on_exit": false,
+    "timeframe": "1h",
+    "unfilledtimeout": {
+        "entry": 10,
+        "exit": 10,
+        "exit_timeout_count": 0,
+        "unit": "minutes"
+    },
+    "entry_pricing": {
+        "price_side": "same",
+        "use_order_book": true,
+        "order_book_top": 1,
+        "price_last_balance": 0.0,
+        "check_depth_of_market": {
+            "enabled": false,
+            "bids_to_ask_delta": 1
+        }
+    },
+    "exit_pricing": {
+        "price_side": "same",
+        "use_order_book": true,
+        "order_book_top": 1
+    },
+    "order_types": {
+        "entry": "limit",
+        "exit": "limit",
+        "emergency_exit": "market",
+        "force_entry": "market",
+        "force_exit": "market",
+        "stoploss": "market",
+        "stoploss_on_exchange": true,
+        "stoploss_on_exchange_interval": 60
+    },
+    "exchange": {
+        "name": "kraken",
+        "key": "",
+        "secret": "",
+        "ccxt_config": {
+            "enableRateLimit": true,
+            "rateLimit": 3100
+        },
+        "ccxt_async_config": {
+            "enableRateLimit": true,
+            "rateLimit": 3100
+        },
+        "pair_whitelist": [],
+        "pair_blacklist": [
+            "USDT/.*",
+            "USDC/.*",
+            "DAI/.*",
+            "PYUSD/.*",
+            "TUSD/.*",
+            "EUR/.*",
+            "GBP/.*",
+            "AUD/.*",
+            "USD/.*"
+        ]
+    },
+    "pairlists": [
+        {
+            "method": "VolumePairList",
+            "number_assets": 20,
+            "sort_key": "quoteVolume",
+            "min_value": 0,
+            "refresh_period": 1800
+        },
+        {
+            "method": "SpreadFilter",
+            "max_spread_ratio": 0.005
+        },
+        {
+            "method": "PriceFilter",
+            "low_price_ratio": 0.01
+        }
+    ],
+    "telegram": {
+        "enabled": false,
+        "token": "",
+        "chat_id": "",
+        "notification_settings": {
+            "status": "on",
+            "warning": "on",
+            "startup": "on",
+            "entry": "on",
+            "entry_fill": "on",
+            "exit": "on",
+            "exit_fill": "on",
+            "entry_cancel": "on",
+            "exit_cancel": "on",
+            "protection_trigger": "on",
+            "protection_trigger_global": "on"
+        },
+        "keyboard": [
+            ["/daily", "/profit", "/balance"],
+            ["/status table", "/performance", "/count"],
+            ["/reload_config", "/stopentry", "/start"]
+        ]
+    },
+    "api_server": {
+        "enabled": true,
+        "listen_ip_address": "0.0.0.0",
+        "listen_port": 8080,
+        "verbosity": "error",
+        "enable_openapi": false,
+        "jwt_secret_key": "override_me_via_env",
+        "ws_token": "override_me_via_env",
+        "CORS_origins": [],
+        "username": "freqtrader",
+        "password": "override_me_via_env"
+    },
+    "webhook": {
+        "enabled": true,
+        "url": "http://companion:8090/webhook",
+        "format": "json",
+        "retries": 2,
+        "retry_delay": 2,
+        "entry": {
+            "event": "entry",
+            "trade_id": "{trade_id}",
+            "pair": "{pair}",
+            "open_rate": "{open_rate}",
+            "stake_amount": "{stake_amount}",
+            "current_time": "{current_time}"
+        },
+        "entry_fill": {
+            "event": "entry_fill",
+            "trade_id": "{trade_id}",
+            "pair": "{pair}",
+            "open_rate": "{open_rate}",
+            "stake_amount": "{stake_amount}",
+            "current_time": "{current_time}"
+        },
+        "entry_cancel": {
+            "event": "entry_cancel",
+            "trade_id": "{trade_id}",
+            "pair": "{pair}",
+            "open_rate": "{open_rate}",
+            "stake_amount": "{stake_amount}",
+            "current_time": "{current_time}"
+        },
+        "exit": {
+            "event": "exit",
+            "trade_id": "{trade_id}",
+            "pair": "{pair}",
+            "gain": "{gain}",
+            "profit_amount": "{profit_amount}",
+            "profit_ratio": "{profit_ratio}",
+            "exit_reason": "{exit_reason}",
+            "current_time": "{current_time}"
+        },
+        "exit_fill": {
+            "event": "exit_fill",
+            "trade_id": "{trade_id}",
+            "pair": "{pair}",
+            "gain": "{gain}",
+            "close_rate": "{close_rate}",
+            "profit_amount": "{profit_amount}",
+            "profit_ratio": "{profit_ratio}",
+            "exit_reason": "{exit_reason}",
+            "current_time": "{current_time}"
+        },
+        "exit_cancel": {
+            "event": "exit_cancel",
+            "trade_id": "{trade_id}",
+            "pair": "{pair}",
+            "gain": "{gain}",
+            "profit_amount": "{profit_amount}",
+            "profit_ratio": "{profit_ratio}",
+            "exit_reason": "{exit_reason}",
+            "current_time": "{current_time}"
+        },
+        "status": {
+            "event": "status",
+            "status": "{status}"
+        }
+    },
+    "initial_state": "running",
+    "internals": {
+        "process_throttle_secs": 5
+    }
+}

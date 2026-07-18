@@ -1,0 +1,39 @@
+services:
+  freqtrade:
+    image: freqtradeorg/freqtrade:stable
+    restart: ${RESTART_POLICY:-unless-stopped}
+    env_file: .env
+    volumes:
+      - ./user_data:/freqtrade/user_data
+      - ./config:/freqtrade/config
+    ports:
+      # BIND_ADDR is set by scripts/start.sh from settings.json:
+      #   vps   -> 127.0.0.1 (open FreqUI through an SSH tunnel)
+      #   local -> 0.0.0.0   (FreqUI reachable on your LAN)
+    - "${BIND_ADDR:-127.0.0.1}:8080:8080"
+    command: >
+      trade
+      --config /freqtrade/config/config.json
+      --config /freqtrade/config/risk_settings.json
+      --strategy KrakenSpotStrategy
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+  companion:
+    build: ./companion
+    restart: ${RESTART_POLICY:-unless-stopped}
+    env_file: .env
+    depends_on:
+      - freqtrade
+    volumes:
+      - ./config:/app/config
+      - ./user_data:/app/user_data:ro
+      - ./companion_data:/app/data
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"

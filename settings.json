@@ -1,0 +1,6 @@
+{
+  "_comment": "Deployment settings. deploy.mode: 'vps' (secure: UI only via SSH tunnel) or 'local' (UI reachable on your LAN).",
+  "deploy": {
+    "mode": "vps"
+  }
+}
