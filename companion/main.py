@@ -56,7 +56,8 @@ async def run() -> None:
 
     tasks = []
 
-    web_app = build_app(failure_log, notify=notifier.send)
+    web_app = build_app(failure_log, notify=notifier.send,
+                        lab_reports_dir=Env.DATA_DIR / "lab_reports")
     server = uvicorn.Server(uvicorn.Config(
         web_app, host="0.0.0.0", port=Env.WEBHOOK_PORT, log_level="warning"))
     tasks.append(asyncio.create_task(server.serve(), name="webhook-api"))

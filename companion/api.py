@@ -1,15 +1,26 @@
-"""FastAPI receiver for freqtrade webhook events -> event/failure back-log."""
+"""FastAPI receiver for freqtrade webhook events -> event/failure back-log.
+
+Also serves the backtest-lab comparison reports at /lab (read-only static)."""
 
 from __future__ import annotations
 
+from pathlib import Path
+
 from fastapi import FastAPI, Request
+from fastapi.staticfiles import StaticFiles
 
 from .failure_log import FAILURE_EVENTS, FailureLog
 
 
-def build_app(failure_log: FailureLog, notify=None) -> FastAPI:
+def build_app(failure_log: FailureLog, notify=None,
+              lab_reports_dir: Path | None = None) -> FastAPI:
     app = FastAPI(title="kraken-bot companion", docs_url=None, redoc_url=None)
     notify = notify or (lambda msg: None)
+
+    if lab_reports_dir is not None:
+        lab_reports_dir.mkdir(parents=True, exist_ok=True)
+        app.mount("/lab", StaticFiles(directory=str(lab_reports_dir),
+                                      html=True), name="lab")
 
     @app.get("/health")
     async def health():

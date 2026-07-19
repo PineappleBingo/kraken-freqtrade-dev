@@ -11,7 +11,8 @@ companion service.
 |---|---|
 | `config/config.json` | freqtrade plumbing: Kraken spot, dry-run (paper trading), FreqUI, webhooks |
 | `config/risk_settings.json` | **every tunable knob** — risk, capital, protections (single source of truth) |
-| `user_data/strategies/KrakenSpotStrategy.py` | conservative 1h trend-pullback strategy |
+| `user_data/strategies/` | 3 strategies (below); select via `STRATEGY=` in `.env` |
+| `scripts/lab.sh` + `companion/backtest_lab/` | **backtest lab**: data download, backtests, hyperopt tuning, FreqUI web backtesting, and an interactive strategy-comparison report |
 | `companion/` | custom features (below), talks to freqtrade only via its REST API / webhooks / DB |
 | `settings.json` + `scripts/start.sh` | one-command start; `deploy.mode: "vps"` or `"local"` toggle |
 | `docs/GUIDE_KO.md` | **한국어 완전 가이드** (full Korean how-to) |
@@ -35,6 +36,32 @@ companion service.
 - **📋 Failure back-log** — every bot event (and every cancelled/failed order)
   is stored in `companion_data/events.sqlite` for post-mortems, with instant
   Telegram alerts on failures.
+
+### Strategies
+
+| Strategy | Timeframe | Style | Use |
+|---|---|---|---|
+| `KrakenSpotStrategy` (default) | 1h | EMA-trend + RSI-pullback, very conservative | paper/live |
+| `E0V1EKraken` | 15m | community E0V1E scalper retuned for Kraken fees — ROI floor 1.7% gross ≈ **1%+ net** per trade | paper/live |
+| `NostalgiaForInfinityX6` | 5m | vendored top community strategy (GPL-3) | **backtest comparison only** — tuned for 40–80 Binance pairs, not for live use on a small Kraken account |
+
+Select the active strategy with `STRATEGY=` in `.env`, then `bash scripts/start.sh`.
+
+### Backtest lab
+
+```bash
+bash scripts/lab.sh download --days 180          # Kraken history (needs --dl-trades, RAM-heavy)
+bash scripts/lab.sh backtest E0V1EKraken --timerange 20260101-
+bash scripts/lab.sh hyperopt E0V1EKraken --epochs 60   # auto-tune entry/exit attributes
+bash scripts/lab.sh webui                        # FreqUI interactive backtesting on :8081
+bash scripts/lab.sh compare KrakenSpotStrategy E0V1EKraken --pairs "BTC/USD"
+```
+
+`compare` runs each strategy on identical data/fees and renders an interactive
+HTML report (equity curves, drawdown, monthly returns, per-trade scatter,
+winner-highlighted metrics table) at `companion_data/lab_reports/latest.html`,
+also served at `http://localhost:8090/lab/latest.html`. Backtests default to
+`fee 0.004` (Kraken worst-case taker) via `config/backtest.json`.
 
 ## Quick start
 

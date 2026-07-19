@@ -98,7 +98,45 @@ Cycle: target hit → entries paused → wait until flat → `available_capital`
 reset + bot resumed → Telegram tells you to withdraw the set-aside → after the
 withdrawal is detected, the cycle re-arms.
 
-## 6. Day-2 operations
+## 6. Backtest lab (strategy testing & comparison)
+
+Everything runs through `scripts/lab.sh` (freqtrade's own engine under the
+hood; Kraken worst-case taker fee 0.4% is applied by default via
+`config/backtest.json`):
+
+```bash
+# 1) download history once (Kraken only serves 720 candles via API,
+#    so this uses trade-data download — slow and RAM-heavy, be patient)
+bash scripts/lab.sh download --days 180
+
+# 2) single backtest with monthly breakdown
+bash scripts/lab.sh backtest E0V1EKraken --timerange 20260101-
+
+# 3) auto-tune a strategy's entry/exit attributes (hyperopt)
+bash scripts/lab.sh hyperopt E0V1EKraken --epochs 60
+
+# 4) interactive backtesting in the browser (FreqUI "Backtest" page):
+#    change strategy/timerange, re-run, inspect trades on the chart
+bash scripts/lab.sh webui        # port 8081, same SSH-tunnel pattern
+
+# 5) compare strategies on IDENTICAL data -> interactive visual report
+bash scripts/lab.sh compare KrakenSpotStrategy E0V1EKraken --pairs "BTC/USD" --timerange 20260101-
+```
+
+The compare report (equity curves, drawdown, monthly returns, trade scatter,
+winner-highlighted metrics) lands at `companion_data/lab_reports/latest.html`
+and is served at `http://localhost:8090/lab/latest.html`
+(vps mode: `ssh -L 8090:127.0.0.1:8090 user@vps` first).
+
+Notes:
+- `NostalgiaForInfinityX6` is vendored for comparisons; it's a 70k-line
+  community strategy tuned for Binance-scale pairlists — treat its results
+  as reference only, and expect it to need `pandas_ta` (bundled in the
+  freqtrade docker image).
+- Strategies with different timeframes are compared fairly: `compare` runs
+  each one separately on the same pairs/timerange/fee and merges the exports.
+
+## 7. Day-2 operations
 
 - **Change risk settings**: settings bot → 🛡 Risk (audit-logged, applied live)
 - **Review failures**: settings bot → 📋 Failures, or

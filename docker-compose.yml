@@ -15,12 +15,28 @@ services:
       trade
       --config /freqtrade/config/config.json
       --config /freqtrade/config/risk_settings.json
-      --strategy KrakenSpotStrategy
+      --strategy ${STRATEGY:-KrakenSpotStrategy}
     logging:
       driver: json-file
       options:
         max-size: "10m"
         max-file: "5"
+
+  freqtrade-lab:
+    # FreqUI interactive backtesting (started by scripts/lab.sh webui)
+    image: freqtradeorg/freqtrade:stable
+    profiles: ["lab"]
+    env_file: .env
+    volumes:
+      - ./user_data:/freqtrade/user_data
+      - ./config:/freqtrade/config
+    ports:
+      - "${BIND_ADDR:-127.0.0.1}:8081:8080"
+    command: >
+      webserver
+      --config /freqtrade/config/config.json
+      --config /freqtrade/config/risk_settings.json
+      --config /freqtrade/config/backtest.json
 
   companion:
     build: ./companion
@@ -28,6 +44,9 @@ services:
     env_file: .env
     depends_on:
       - freqtrade
+    ports:
+      # /lab -> interactive strategy-comparison reports
+      - "${BIND_ADDR:-127.0.0.1}:8090:8090"
     volumes:
       - ./config:/app/config
       - ./user_data:/app/user_data:ro

@@ -8,7 +8,6 @@
     "stake_currency": "USD",
     "fiat_display_currency": "USD",
     "cancel_open_orders_on_exit": false,
-    "timeframe": "1h",
     "unfilledtimeout": {
         "entry": 10,
         "exit": 10,
