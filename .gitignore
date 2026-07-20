@@ -1,0 +1,16 @@
+.env
+config/google-service-account.json
+user_data/*.sqlite
+user_data/*.sqlite-shm
+user_data/*.sqlite-wal
+user_data/logs/
+user_data/data/
+user_data/backtest_results/
+user_data/hyperopts/
+user_data/plot/
+user_data/hyperopt_results/
+companion_data/
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/

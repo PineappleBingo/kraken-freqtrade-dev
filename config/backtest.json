@@ -1,0 +1,24 @@
+{
+    "_comment": "Backtest-lab overlay, loaded LAST for lab commands only. Backtesting cannot use VolumePairList, so a static list of liquid Kraken USD pairs is used. fee 0.004 = Kraken worst-case taker fee per side; override per run with scripts/lab.sh --fee.",
+    "fee": 0.004,
+    "dry_run_wallet": 1000,
+    "exchange": {
+        "name": "kraken",
+        "pair_whitelist": [
+            "BTC/USD",
+            "ETH/USD",
+            "SOL/USD",
+            "XRP/USD",
+            "ADA/USD",
+            "LINK/USD",
+            "DOGE/USD",
+            "LTC/USD"
+        ],
+        "pair_blacklist": []
+    },
+    "pairlists": [
+        {
+            "method": "StaticPairList"
+        }
+    ]
+}
