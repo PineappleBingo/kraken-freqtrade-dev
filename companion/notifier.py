@@ -1,4 +1,4 @@
-"""Send alerts to the user through the settings bot's Telegram token."""
+"""Push alerts to the user through the unified Telegram bot's token."""
 
 from __future__ import annotations
 

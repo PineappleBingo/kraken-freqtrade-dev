@@ -29,10 +29,14 @@ companion service.
   [Universal Manual Import](https://help.coinledger.io/en/articles/6028758-universal-manual-import-template-guide)
   rows, auto-appended to **Google Sheets** (paper and live trades kept in
   separate tabs) with a local CSV backup that never fails.
-- **⚙️ Telegram settings bot** — a second Telegram bot with inline buttons to
-  view/change stoploss, max open trades, capital targets, etc. Changes are
-  bounds-checked, written atomically, applied live via `/reload_config`, and
-  audit-logged.
+- **📱 ONE unified Telegram bot** — a single bot (one token) does everything
+  with inline buttons, pagination, and full button navigation:
+  trade **alerts** (entries, fills, exits, cancels — via freqtrade's webhook,
+  per-event on/off toggles), a **dashboard** (balance, profit, mode, strategy),
+  **trade control** (paginated open trades → force-exit with confirmation),
+  and **settings** (stoploss, capital targets… bounds-checked, applied live
+  via `/reload_config`, audit-logged). freqtrade's built-in Telegram stays
+  disabled — no second bot needed.
 - **📋 Failure back-log** — every bot event (and every cancelled/failed order)
   is stored in `companion_data/events.sqlite` for post-mortems, with instant
   Telegram alerts on failures.

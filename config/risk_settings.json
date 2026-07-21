@@ -15,6 +15,15 @@
         "1440": 0.01
     },
     "companion": {
+        "alerts": {
+            "entry": true,
+            "entry_fill": true,
+            "exit": true,
+            "exit_fill": true,
+            "entry_cancel": true,
+            "exit_cancel": true,
+            "status": false
+        },
         "capital_management": {
             "enabled": true,
             "initial_capital_usd": 300,

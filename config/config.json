@@ -82,27 +82,10 @@
         }
     ],
     "telegram": {
+        "_comment": "Stays disabled: the companion's unified Telegram bot handles alerts, trade control and settings via freqtrade's webhook + REST API.",
         "enabled": false,
         "token": "",
-        "chat_id": "",
-        "notification_settings": {
-            "status": "on",
-            "warning": "on",
-            "startup": "on",
-            "entry": "on",
-            "entry_fill": "on",
-            "exit": "on",
-            "exit_fill": "on",
-            "entry_cancel": "on",
-            "exit_cancel": "on",
-            "protection_trigger": "on",
-            "protection_trigger_global": "on"
-        },
-        "keyboard": [
-            ["/daily", "/profit", "/balance"],
-            ["/status table", "/performance", "/count"],
-            ["/reload_config", "/stopentry", "/start"]
-        ]
+        "chat_id": ""
     },
     "api_server": {
         "enabled": true,

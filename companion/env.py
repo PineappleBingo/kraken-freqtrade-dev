@@ -25,8 +25,11 @@ class Env:
     FREQTRADE_API_USERNAME = os.environ.get("FREQTRADE__API_SERVER__USERNAME", "freqtrader")
     FREQTRADE_API_PASSWORD = os.environ.get("FREQTRADE__API_SERVER__PASSWORD", "")
 
-    SETTINGS_BOT_TOKEN = os.environ.get("SETTINGS_BOT_TOKEN", "")
-    SETTINGS_BOT_CHAT_IDS = _split_ids(os.environ.get("SETTINGS_BOT_CHAT_IDS", ""))
+    # Single unified bot. Legacy SETTINGS_BOT_* names still accepted.
+    TELEGRAM_BOT_TOKEN = (os.environ.get("TELEGRAM_BOT_TOKEN")
+                          or os.environ.get("SETTINGS_BOT_TOKEN", ""))
+    TELEGRAM_CHAT_IDS = _split_ids(os.environ.get("TELEGRAM_CHAT_IDS")
+                                   or os.environ.get("SETTINGS_BOT_CHAT_IDS", ""))
 
     GOOGLE_SHEETS_CREDENTIALS_FILE = os.environ.get("GOOGLE_SHEETS_CREDENTIALS_FILE", "")
     GOOGLE_SHEETS_SPREADSHEET_ID = os.environ.get("GOOGLE_SHEETS_SPREADSHEET_ID", "")
