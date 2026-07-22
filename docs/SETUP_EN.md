@@ -7,10 +7,9 @@ fully-detailed one — this is a condensed English mirror.
 
 - A VPS (see `VM_OPTIONS.md`) or any always-on machine with Docker
 - A Kraken account (US-supported), verified
-- Two Telegram bots from [@BotFather](https://t.me/BotFather):
-  - **Bot 1** — freqtrade's trade notifications & built-in commands
-  - **Bot 2** — the companion settings bot (inline-button config editor)
-  - Get your numeric chat id from [@userinfobot](https://t.me/userinfobot)
+- **ONE Telegram bot** from [@BotFather](https://t.me/BotFather) — it handles
+  everything: trade alerts, dashboard, trade control, and settings.
+  Get your numeric chat id from [@userinfobot](https://t.me/userinfobot)
 - (Recommended) A Google account for the tax-log spreadsheet
 
 ## 1. Server prep (VPS)
@@ -35,9 +34,12 @@ nano .env
 
 Fill in:
 - `FREQTRADE__API_SERVER__PASSWORD` / `JWT_SECRET_KEY` / `WS_TOKEN` — strong random strings
-- `FREQTRADE__TELEGRAM__ENABLED=true`, token + chat id for **Bot 1**
-- `SETTINGS_BOT_TOKEN` + `SETTINGS_BOT_CHAT_IDS` for **Bot 2**
+- `TELEGRAM_BOT_TOKEN` + `TELEGRAM_CHAT_IDS` — your one bot
 - Leave `FREQTRADE__EXCHANGE__KEY/SECRET` **empty** for paper trading
+
+(Upgrading from the old two-bot setup? Use your old settings-bot token as
+`TELEGRAM_BOT_TOKEN` and delete the other bot in BotFather — the legacy
+`SETTINGS_BOT_*` variable names still work.)
 
 ### Google Sheets tax log (optional, ~10 min, free)
 
@@ -63,9 +65,22 @@ docker compose logs -f freqtrade   # watch it work
 ```
 
 - FreqUI dashboard: `ssh -L 8080:127.0.0.1:8080 user@vps` → http://localhost:8080
-- Telegram Bot 1: `/status`, `/profit`, `/daily`, `/balance`
-- Telegram Bot 2: `/start` → inline settings menu (Risk / Capital / Bot control
-  / Failures / Tax log)
+- Telegram: send `/start` to your bot → button menu, everything is 2 taps away:
+
+```
+🏠 Home
+├ 📊 Dashboard   balance · profit · open trades · strategy · paper/live
+├ 📈 Trades      paginated list → tap a trade → ❌ Force exit → ✅ confirm
+├ 🛡 Risk        tap a field → send new value (validated, applied live)
+├ 💰 Capital     profit target / set aside / restart capital
+├ 🤖 Bot         ⏸ pause · ▶️ resume · 🔄 reload config
+├ 🔔 Alerts      toggle which events get pushed (entries, fills, exits…)
+├ 📋 Failures    paginated failure back-log
+└ 🧾 Tax         Google Sheets sync status
+```
+
+Trade alerts (🟢 entry, ✅ fill, 💰 exit…) arrive from this same bot
+automatically — freqtrade's own Telegram stays off.
 
 **Run paper trading for at least 2–4 weeks** and check: win rate, drawdown,
 whether profits exceed the ~0.5–0.8% round-trip fees.
@@ -85,7 +100,7 @@ whether profits exceed the ~0.5–0.8% round-trip fees.
 ## 5. Capital management (bank & reset)
 
 All in `config/risk_settings.json → companion.capital_management`, editable
-from the settings bot's 💰 Capital menu:
+from the Telegram bot's 💰 Capital menu:
 
 | Key | Meaning |
 |---|---|
@@ -138,8 +153,8 @@ Notes:
 
 ## 7. Day-2 operations
 
-- **Change risk settings**: settings bot → 🛡 Risk (audit-logged, applied live)
-- **Review failures**: settings bot → 📋 Failures, or
+- **Change risk settings**: Telegram bot → 🛡 Risk (audit-logged, applied live)
+- **Review failures**: Telegram bot → 📋 Failures, or
   `companion_data/events.sqlite`
 - **Update the stack**: `git pull && bash scripts/start.sh`
 - **Logs**: `docker compose logs -f freqtrade` / `docker compose logs -f companion`
